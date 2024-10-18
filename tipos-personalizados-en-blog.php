@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Tipos Personalizados en Bucle del Blog
-Description: Incluye tipos de datos personalizados seleccionados en el bucle principal del blog.
-Version: 1.0
+Description: Incluye tipos de datos personalizados seleccionados en el bucle principal del blog y destaca un tipo seleccionado con un borde.
+Version: 1.1
 Author: A. Cambronero Blogpocket.com
 */
 
@@ -30,6 +30,12 @@ function tpib_registrar_configuraciones() {
         'type' => 'array',
         'sanitize_callback' => 'tpib_sanitizar_tipos_seleccionados',
         'default' => array( 'post' ),
+    ) );
+
+    register_setting( 'tpib_opciones_grupo', 'tpib_tipo_destacado', array(
+        'type' => 'string',
+        'sanitize_callback' => 'sanitize_text_field',
+        'default' => '',
     ) );
 }
 
@@ -66,6 +72,9 @@ function tpib_pagina_configuracion() {
     // Obtener los tipos seleccionados
     $tipos_seleccionados = get_option( 'tpib_tipos_seleccionados', array( 'post' ) );
 
+    // Obtener el tipo destacado
+    $tipo_destacado = get_option( 'tpib_tipo_destacado', '' );
+
     ?>
     <div class="wrap">
         <h1>Configuración de Tipos Personalizados en el Blog</h1>
@@ -82,6 +91,22 @@ function tpib_pagina_configuracion() {
                                 <?php echo esc_html( $tipo->labels->singular_name ); ?>
                             </label><br />
                         <?php endforeach; ?>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Selecciona el tipo de publicación a destacar:</th>
+                    <td>
+                        <select name="tpib_tipo_destacado">
+                            <option value="">-- Ninguno --</option>
+                            <?php foreach ( $tipos_seleccionados as $tipo_name ) : 
+                                $tipo_obj = get_post_type_object( $tipo_name );
+                                ?>
+                                <option value="<?php echo esc_attr( $tipo_name ); ?>" <?php selected( $tipo_destacado, $tipo_name ); ?>>
+                                    <?php echo esc_html( $tipo_obj->labels->singular_name ); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="description">Las publicaciones de este tipo aparecerán con un borde de 1px en el blog.</p>
                     </td>
                 </tr>
             </table>
@@ -103,4 +128,21 @@ function tpib_modificar_consulta_principal( $query ) {
         }
     }
 }
-?>
+
+// Agregar clase CSS a las publicaciones destacadas
+add_filter( 'post_class', 'tpib_agregar_clase_destacada' );
+function tpib_agregar_clase_destacada( $classes ) {
+    global $post;
+    $tipo_destacado = get_option( 'tpib_tipo_destacado', '' );
+    if ( $tipo_destacado && $post->post_type == $tipo_destacado ) {
+        $classes[] = 'tpib-destacado';
+    }
+    return $classes;
+}
+
+// Encolar estilos CSS
+add_action( 'wp_enqueue_scripts', 'tpib_encolar_estilos' );
+function tpib_encolar_estilos() {
+    wp_register_style( 'tpib_estilos', plugins_url( 'tpib_estilos.css', __FILE__ ) );
+    wp_enqueue_style( 'tpib_estilos' );
+}
