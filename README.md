@@ -1,11 +1,13 @@
 # Tipos personalizados en el blog
-Este plugin permitirá que en el bucle de la plantilla del blog se incluyan, además de las entradas normales, las publicaciones de los tipos de datos personalizados seleccionados por el administrador, todo en orden cronológico inverso.
+Este plugin permitirá que en el bucle de la plantilla del blog se incluyan, además de las entradas normales, las publicaciones de los tipos de datos personalizados seleccionados por el administrador, todo en orden cronológico inverso. Además, se puede destacar un tipo seleccionado con un estilo diferente (un borde de 1px, por defecto).
 # Activar el plugin
 - Ve al panel de administración de WordPress, navega a "Plugins" y activa "Tipos Personalizados en Bucle del Blog".
 # Configurar el plugin
 - Después de activar el plugin, ve a "Ajustes" > "Tipos en Blog".
 - Selecciona los tipos de publicaciones que deseas incluir en el bucle principal del blog.
+- En el campo "Selecciona el tipo de publicación a destacar", elige el tipo de publicación que deseas que aparezca con un estilo diferente (borde de 1px, por defecto). 
 - Haz clic en "Guardar cambios".
+- En el archivo tpib_estilos.css, se define el estilo para la clase tpib-destacado (1px de borde, por defecto).
 # Verificar en el sitio
 - Visita la página principal de tu blog y verifica que ahora se muestran las publicaciones de los tipos de datos personalizados seleccionados, junto con las entradas normales, todo en orden cronológico inverso.
 # Tipos de datos personalizados públicos
